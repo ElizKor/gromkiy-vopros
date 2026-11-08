@@ -265,7 +265,16 @@ function startHost() {
   connections.clear();
   currentHostKey = null;
 
-  peer = new Peer(ROOM_PREFIX + hostState.code, {debug: 1});
+  peer = new Peer(ROOM_PREFIX + hostState.code, {
+  debug: 1,
+  config: {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' }
+    ]
+  }
+});
   peer.on('open', () => { renderHostLobby(); });
   peer.on('connection', onPlayerConnect);
   peer.on('error', (err) => {
@@ -515,7 +524,16 @@ function connectToHost(code, name) {
     ));
   });
 
-  peer = new Peer({debug: 1});
+    peer = new Peer({
+    debug: 1,
+    config: {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' }
+      ]
+    }
+  });
   peer.on('open', () => {
     hostConn = peer.connect(ROOM_PREFIX + code, {reliable: true});
     hostConn.on('open', () => { hostConn.send({type: 'join', name}); });
