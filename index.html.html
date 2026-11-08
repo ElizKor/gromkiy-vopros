@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#1a1428">
+<title>Громкий вопрос</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; padding: 0;
+  background: #1a1428; color: #f5f0ff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh; min-height: 100dvh;
+}
+body { background: radial-gradient(ellipse at top, #2a2140 0%, #1a1428 60%); padding: 16px; }
+#app {
+  max-width: 480px; margin: 0 auto;
+  min-height: calc(100vh - 32px); min-height: calc(100dvh - 32px);
+  display: flex; flex-direction: column;
+}
+h1 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.02em; }
+h2 { font-size: 22px; margin: 0 0 12px; }
+h3 { font-size: 14px; margin: 20px 0 8px; color: #9a8fb8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+p { margin: 0 0 12px; }
+.sub { color: #9a8fb8; font-size: 15px; }
+.btn {
+  display: block; width: 100%; padding: 16px 20px; border-radius: 14px;
+  border: 1px solid #3a2f55; background: #2a2140; color: #f5f0ff;
+  font-size: 17px; font-weight: 600; font-family: inherit; cursor: pointer;
+  margin-bottom: 10px; transition: transform 0.1s;
+}
+.btn:active { transform: scale(0.98); }
+.btn.primary {
+  background: linear-gradient(135deg, #ffb84d, #e8a040);
+  color: #1a1428; border: none; box-shadow: 0 6px 20px rgba(255,184,77,0.3);
+}
+.btn.ghost { background: transparent; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.input {
+  display: block; width: 100%; padding: 16px 18px; border-radius: 14px;
+  border: 1px solid #3a2f55; background: #2a2140; color: #f5f0ff;
+  font-size: 17px; font-family: inherit; margin-bottom: 12px; outline: none;
+}
+.input:focus { border-color: #ffb84d; }
+.input::placeholder { color: #6a5f85; }
+.center {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; flex: 1; padding: 20px 0;
+}
+.badge {
+  display: inline-block; padding: 6px 14px; border-radius: 999px;
+  background: rgba(255,184,77,0.15); color: #ffb84d; font-size: 12px;
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;
+}
+.room-code {
+  font-family: 'Courier New', monospace; font-size: 48px; font-weight: 700;
+  letter-spacing: 0.15em; color: #ffb84d; margin: 20px 0; text-align: center;
+}
+.players { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+.chip {
+  padding: 8px 14px; border-radius: 999px; background: #2a2140;
+  border: 1px solid #3a2f55; font-size: 14px;
+}
+.chip.me { border-color: #ffb84d; background: rgba(255,184,77,0.1); }
+.progress { font-size: 14px; color: #9a8fb8; text-align: center; margin-bottom: 8px; }
+.timer {
+  font-size: 72px; font-weight: 700; text-align: center; color: #ffb84d;
+  line-height: 1; margin: 12px 0 20px; font-variant-numeric: tabular-nums; transition: color 0.2s;
+}
+.timer.danger { color: #f87171; }
+.question {
+  font-size: 22px; font-weight: 600; line-height: 1.35; margin-bottom: 24px;
+  padding: 20px; background: #2a2140; border-radius: 16px; border: 1px solid #3a2f55;
+}
+.answer-box {
+  background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 16px; padding: 18px; margin-bottom: 16px; text-align: center;
+}
+.answer-box .label {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: #4ade80; margin-bottom: 8px; font-weight: 700;
+}
+.answer-box .answer { font-size: 22px; font-weight: 700; }
+.row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; background: #2a2140; border-radius: 12px;
+  margin-bottom: 8px; font-size: 15px; gap: 10px;
+}
+.row.correct { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); }
+.row .a { color: #9a8fb8; flex: 1; text-align: right; word-break: break-word; }
+.row .mark { font-size: 20px; color: #9a8fb8; flex-shrink: 0; }
+.row.correct .mark { color: #4ade80; }
+.row.done .mark { color: #4ade80; }
+.leaderboard {
+  background: #2a2140; border-radius: 16px; padding: 6px;
+  margin-bottom: 16px; border: 1px solid #3a2f55;
+}
+.lb-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; border-radius: 10px; font-size: 16px;
+}
+.lb-row.me { background: rgba(255,184,77,0.1); }
+.lb-row + .lb-row { border-top: 1px solid #3a2f55; }
+.lb-row .place { color: #9a8fb8; margin-right: 10px; }
+.lb-row .score { color: #ffb84d; font-weight: 700; }
+.submitted {
+  background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 14px; padding: 20px; text-align: center; font-weight: 600;
+  color: #4ade80; margin-bottom: 12px;
+}
+.my-result { border-radius: 14px; padding: 16px; margin-bottom: 16px; text-align: center; }
+.my-result.correct { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); }
+.my-result.wrong { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); }
+.my-result .label { font-weight: 700; margin-bottom: 6px; }
+.my-result.correct .label { color: #4ade80; }
+.my-result.wrong .label { color: #f87171; }
+.my-result .my-answer { color: #9a8fb8; font-size: 14px; }
+.select {
+  display: block; width: 100%; padding: 16px 18px; border-radius: 14px;
+  border: 1px solid #3a2f55; background: #2a2140; color: #f5f0ff;
+  font-size: 17px; font-family: inherit; margin-bottom: 12px; outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%239a8fb8' d='M6 8L0 0h12z'/></svg>");
+  background-repeat: no-repeat; background-position: right 18px center;
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script>
+'use strict';
+
+const ROUND_TIME = 60; // ← длительность раунда в секундах
+
+const QUESTIONS = [
+  {q:"Пятый цвет радуги", a:["голубой"]},
+  {q:"Кто украл Рождество?", a:["гринч"]},
+  {q:"Имя кролика в «Смешариках»", a:["крош"]},
+  {q:"Какой город называют «Большим яблоком»?", a:["нью-йорк","нью йорк","ньюйорк","new york","newyork","ny"]},
+  {q:"Столица Бразилии", a:["бразилиа","бразилия"]},
+  {q:"Какие инициалы у Пушкина?", a:["ас","а.с.","александр сергеевич","пушкин"]},
+  {q:"Что летит от топота копыт?", a:["пыль"]},
+  {q:"Утка-мужик", a:["селезень"]},
+  {q:"В каком городе находится падающая башня?", a:["пиза"]},
+  {q:"Кто написал «Скотный двор»?", a:["оруэлл","джордж оруэлл"]},
+  {q:"В чём летает Баба-яга?", a:["ступа"]},
+  {q:"С какой улицы Зелибоба?", a:["сезам"]},
+  {q:"Кто автор картины «Девочка на шаре»?", a:["пикассо","пабло пикассо"]},
+  {q:"Кличка коня Александра Македонского", a:["буцефал"]},
+  {q:"Первый элемент таблицы Менделеева", a:["водород"]},
+  {q:"Гибрид лошади и осла", a:["мул"]},
+  {q:"Самое высокое здание в мире", a:["бурдж-халифа","бурдж халифа","бурджхалифа","burj khalifa","бурдж"]},
+  {q:"Кто убил Ленского в «Евгении Онегине»?", a:["онегин","евгений онегин"]},
+  {q:"Имя гиппогрифа Хагрида", a:["клювокрыл"]},
+  {q:"Кто исполняет песню «П.М.М.Л.»?", a:["земфира"]},
+  {q:"Единственное, что может убить Супермена", a:["криптонит"]},
+  {q:"Оруженосец Дон Кихота", a:["санчо панса","санчо","санчопанса"]},
+  {q:"Автор романа «Алхимик»", a:["коэльо","паоло коэльо"]},
+  {q:"Настоящая фамилия Егора Крида", a:["булаткин"]},
+  {q:"Столица Австралии", a:["канберра"]},
+  {q:"Как звали первую собаку, полетевшую в космос?", a:["лайка"]},
+  {q:"Сколько ног у паука?", a:["восемь","8"]},
+  {q:"Автор «Войны и мира»", a:["толстой","лев толстой"]},
+  {q:"Химический символ золота", a:["au"]},
+  {q:"Какое животное называют «кораблём пустыни»?", a:["верблюд"]},
+  {q:"Сколько лет Илья Муромец сидел на печи?", a:["33","тридцать три"]},
+  {q:"В каком месяце меньше всего дней?", a:["февраль"]},
+  {q:"Сколько республик входило в состав СССР?", a:["15","пятнадцать"]},
+  {q:"Любимый инструмент Шерлока Холмса", a:["скрипка"]},
+  {q:"Кто написал «Мойдодыр»?", a:["чуковский","корней чуковский"]},
+];
+
+function h(tag, attrs, ...children) {
+  const el = document.createElement(tag);
+  if (attrs) {
+    for (const k in attrs) {
+      const v = attrs[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'style') Object.assign(el.style, v);
+      else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
+      else if (k === 'value') el.value = v;
+      else if (k === 'disabled') el.disabled = !!v;
+      else el.setAttribute(k, v);
+    }
+  }
+  for (const c of children) {
+    if (c == null || c === false) continue;
+    el.appendChild(typeof c === 'string' || typeof c === 'number' ? document.createTextNode(String(c)) : c);
+  }
+  return el;
+}
+
+function norm(s) { return String(s || '').toLowerCase().replace(/[^а-яёa-z0-9]/g, ''); }
+
+function checkAnswer(playerAnswer, acceptable) {
+  const n = norm(playerAnswer);
+  if (!n) return false;
+  return acceptable.some(a => {
+    const na = norm(a);
+    if (!na) return false;
+    return n === na || (na.length >= 4 && n.includes(na));
+  });
+}
+
+function randomCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s = '';
+  for (let i = 0; i < 5; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
+}
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const ROOM_PREFIX = 'gromkiy-vopros-2024-';
+const app = document.getElementById('app');
+function showScreen(builder) { app.innerHTML = ''; builder(app); }
+
+const hostState = {
+  code: null, phase: 'lobby', qIndex: 0, timeLeft: ROUND_TIME, timerId: null,
+  questions: [], players: [],
+};
+const playerState = {
+  name: null, code: null, lastQIndex: -1, myAnswer: '', submitted: false, state: null,
+};
+
+let peer = null;
+let connections = new Map();
+let hostConn = null;
+let currentHostKey = null;
+let currentPlayerScreen = null;
+
+function homeScreen() {
+  showScreen(el => {
+    el.appendChild(h('div', {class:'center'},
+      h('h1', {}, 'Громкий вопрос'),
+      h('p', {class:'sub', style:{marginBottom:'32px'}}, 'Игра для компании'),
+      h('button', {class:'btn primary', onclick: startHost}, 'Создать комнату'),
+      h('button', {class:'btn', onclick: joinScreen}, 'Присоединиться'),
+    ));
+  });
+}
+
+function startHost() {
+  showScreen(el => {
+    el.appendChild(h('div', {class:'center'},
+      h('h2', {}, 'Создаём комнату…'),
+      h('p', {class:'sub'}, 'Подождите секунду'),
+    ));
+  });
+  hostState.code = randomCode();
+  hostState.phase = 'lobby';
+  hostState.qIndex = 0;
+  hostState.players = [];
+  hostState.questions = [];
+  clearInterval(hostState.timerId);
+  connections.clear();
+  currentHostKey = null;
+
+  peer = new Peer(ROOM_PREFIX + hostState.code, {debug: 1});
+  peer.on('open', () => { renderHostLobby(); });
+  peer.on('connection', onPlayerConnect);
+  peer.on('error', (err) => {
+    console.error(err);
+    if (err.type === 'unavailable-id') {
+      alert('Код занят, пробуем другой…');
+      try { peer.destroy(); } catch(e) {}
+      startHost();
+    } else {
+      alert('Ошибка соединения: ' + err.type);
+      location.reload();
+    }
+  });
+}
+
+function onPlayerConnect(conn) {
+  conn.on('data', (data) => {
+    if (data.type === 'join') {
+      if (hostState.players.some(p => p.id === conn.peer)) return;
+      hostState.players.push({
+        id: conn.peer, name: (data.name || 'Игрок').slice(0, 20),
+        conn, score: 0, answer: null, correct: false,
+      });
+      connections.set(conn.peer, conn);
+      broadcast();
+    } else if (data.type === 'answer') {
+      const player = hostState.players.find(p => p.id === conn.peer);
+      if (player && hostState.phase === 'question' && player.answer == null) {
+        player.answer = String(data.text || '').slice(0, 80);
+        const q = hostState.questions[hostState.qIndex];
+        player.correct = checkAnswer(player.answer, q.a);
+        broadcast();
+      }
+    }
+  });
+  conn.on('close', () => {
+    hostState.players = hostState.players.filter(p => p.id !== conn.peer);
+    connections.delete(conn.peer);
+    broadcast();
+  });
+  conn.on('error', (e) => { console.error('conn error', e); });
+}
+
+function publicState() {
+  const s = hostState;
+  const q = s.questions[s.qIndex];
+  const showAnswer = s.phase === 'reveal' || s.phase === 'final';
+  return {
+    phase: s.phase, qIndex: s.qIndex, totalQ: s.questions.length, timeLeft: s.timeLeft,
+    question: (s.phase === 'question' || s.phase === 'reveal') && q ? q.q : null,
+    correctAnswer: showAnswer && q ? q.a[0] : null,
+    players: s.players.map(p => ({
+      name: p.name, score: p.score, answered: p.answer != null,
+      answer: showAnswer ? p.answer : null, correct: showAnswer ? p.correct : null,
+    })),
+  };
+}
+
+function broadcast() {
+  const pub = publicState();
+  for (const conn of connections.values()) {
+    try { conn.send({type:'state', state: pub}); } catch(e) {}
+  }
+  if (hostState.phase === 'lobby') renderHostLobby();
+  else renderHostGame();
+}
+
+function startTimer() {
+  clearInterval(hostState.timerId);
+  hostState.timeLeft = ROUND_TIME;
+  broadcast();
+  hostState.timerId = setInterval(() => {
+    if (hostState.phase !== 'question') { clearInterval(hostState.timerId); return; }
+    hostState.timeLeft--;
+    if (hostState.timeLeft <= 0) {
+      hostState.timeLeft = 0;
+      clearInterval(hostState.timerId);
+      revealAnswer();
+    } else broadcast();
+  }, 1000);
+}
+
+function startGame(count) {
+  hostState.questions = shuffle(QUESTIONS).slice(0, count);
+  hostState.qIndex = 0;
+  hostState.players.forEach(p => { p.score = 0; p.answer = null; p.correct = false; });
+  hostState.phase = 'question';
+  currentHostKey = null;
+  startTimer();
+}
+
+function revealAnswer() {
+  clearInterval(hostState.timerId);
+  if (hostState.phase !== 'question') return;
+  hostState.phase = 'reveal';
+  hostState.players.forEach(p => { if (p.correct) p.score++; });
+  broadcast();
+}
+
+function nextQuestion() {
+  clearInterval(hostState.timerId);
+  hostState.qIndex++;
+  if (hostState.qIndex >= hostState.questions.length) {
+    hostState.phase = 'final';
+    broadcast();
+    return;
+  }
+  hostState.players.forEach(p => { p.answer = null; p.correct = false; });
+  hostState.phase = 'question';
+  startTimer();
+}
+
+function renderHostLobby() {
+  currentHostKey = null;
+  showScreen(el => {
+    const countSel = h('select', {class:'select'},
+      h('option', {value:'5'}, '5 вопросов'),
+      h('option', {value:'10'}, '10 вопросов'),
+      h('option', {value:'15'}, '15 вопросов'),
+      h('option', {value:'20'}, '20 вопросов'),
+    );
+    countSel.value = '10';
+    const btn = h('button', {class:'btn primary'}, 'Начать игру');
+    if (hostState.players.length === 0) {
+      btn.disabled = true;
+      btn.textContent = 'Ждём игроков…';
+    } else {
+      btn.onclick = () => startGame(parseInt(countSel.value, 10));
+    }
+    el.appendChild(h('div', {},
+      h('div', {class:'badge'}, 'Ведущий'),
+      h('h1', {}, 'Комната создана'),
+      h('div', {class:'room-code'}, hostState.code),
+      h('p', {class:'sub', style:{textAlign:'center'}}, 'Скажите игрокам этот код'),
+      h('h3', {}, 'Игроки: ' + hostState.players.length),
+      h('div', {class:'players'}, ...hostState.players.map(p => h('div', {class:'chip'}, p.name))),
+      countSel, btn,
+    ));
+  });
+}
+
+function renderHostGame() {
+  const s = hostState;
+  if (s.phase === 'lobby') { renderHostLobby(); return; }
+  const q = s.questions[s.qIndex];
+  const answeredCount = s.players.filter(p => p.answer != null).length;
+  const key = s.phase + ':' + s.qIndex + ':' + answeredCount;
+
+  if (currentHostKey === key) {
+    const t = document.querySelector('.timer');
+    if (t && s.phase === 'question') {
+      t.textContent = String(s.timeLeft);
+      t.classList.toggle('danger', s.timeLeft <= 5);
+    }
+    return;
+  }
+  currentHostKey = key;
+
+  showScreen(el => {
+    const wrap = h('div', {});
+    if (s.phase === 'question' || s.phase === 'reveal') {
+      wrap.appendChild(h('div', {class:'progress'}, `Вопрос ${s.qIndex + 1} из ${s.questions.length}`));
+      wrap.appendChild(h('div', {class:'timer' + (s.timeLeft <= 5 ? ' danger' : '')}, String(s.timeLeft)));
+      wrap.appendChild(h('div', {class:'question'}, q.q));
+      if (s.phase === 'reveal') {
+        wrap.appendChild(h('div', {class:'answer-box'},
+          h('div', {class:'label'}, 'Правильный ответ'),
+          h('div', {class:'answer'}, q.a[0]),
+        ));
+        wrap.appendChild(h('h3', {}, 'Ответы игроков'));
+        s.players.forEach(p => {
+          wrap.appendChild(h('div', {class:'row' + (p.correct ? ' correct' : '')},
+            h('span', {}, p.name),
+            h('span', {class:'a'}, p.answer || '—'),
+            h('span', {class:'mark'}, p.correct ? '✓' : '✗'),
+          ));
+        });
+        const last = s.qIndex + 1 >= s.questions.length;
+        wrap.appendChild(h('button', {class:'btn primary', style:{marginTop:'16px'}, onclick: nextQuestion},
+          last ? 'Показать итоги' : 'Следующий вопрос'));
+      } else {
+        wrap.appendChild(h('h3', {}, 'Ждём ответы'));
+        s.players.forEach(p => {
+          wrap.appendChild(h('div', {class:'row' + (p.answer ? ' correct' : '')},
+            h('span', {}, p.name),
+            h('span', {class:'mark'}, p.answer ? '✓' : '…'),
+          ));
+        });
+        wrap.appendChild(h('button', {
+          class:'btn primary', style:{marginTop:'16px'},
+          onclick: () => { clearInterval(s.timerId); revealAnswer(); },
+        }, 'Показать ответ'));
+      }
+    } else if (s.phase === 'final') {
+      const sorted = [...s.players].sort((a,b) => b.score - a.score);
+      wrap.appendChild(h('h1', {style:{textAlign:'center', marginBottom:'20px'}}, 'Игра окончена!'));
+      wrap.appendChild(h('div', {class:'leaderboard'}, ...sorted.map((p, i) =>
+        h('div', {class:'lb-row'},
+          h('span', {}, h('span', {class:'place'}, (i+1) + '.'), p.name),
+          h('span', {class:'score'}, p.score + ' очк.'),
+        )
+      )));
+      wrap.appendChild(h('button', {class:'btn primary', onclick: () => {
+        s.phase = 'lobby';
+        s.qIndex = 0;
+        s.players.forEach(p => { p.score = 0; p.answer = null; p.correct = false; });
+        broadcast();
+      }}, 'Играть снова'));
+    }
+    el.appendChild(wrap);
+  });
+}
+
+function joinScreen() {
+  showScreen(el => {
+    const nameInput = h('input', {class:'input', placeholder:'Ваше имя', maxlength:'20', autocomplete:'off'});
+    const codeInput = h('input', {class:'input', placeholder:'Код комнаты', maxlength:'6', autocomplete:'off', style:{textTransform:'uppercase'}});
+    const btn = h('button', {class:'btn primary', onclick: () => {
+      const name = nameInput.value.trim();
+      const code = codeInput.value.trim().toUpperCase();
+      if (!name) { nameInput.focus(); return; }
+      if (code.length < 4) { codeInput.focus(); return; }
+      connectToHost(code, name);
+    }}, 'Войти');
+    codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') btn.click(); });
+    el.appendChild(h('div', {},
+      h('h2', {style:{marginBottom:'20px'}}, 'Присоединиться'),
+      nameInput, codeInput, btn,
+      h('button', {class:'btn ghost', onclick: homeScreen}, 'Назад'),
+    ));
+  });
+}
+
+function connectToHost(code, name) {
+  playerState.name = name;
+  playerState.code = code;
+  playerState.lastQIndex = -1;
+  playerState.submitted = false;
+  playerState.myAnswer = '';
+  playerState.state = null;
+  currentPlayerScreen = null;
+
+  showScreen(el => {
+    el.appendChild(h('div', {class:'center'},
+      h('h2', {}, 'Подключаемся…'),
+      h('p', {class:'sub'}, 'Комната ' + code),
+    ));
+  });
+
+  peer = new Peer({debug: 1});
+  peer.on('open', () => {
+    hostConn = peer.connect(ROOM_PREFIX + code, {reliable: true});
+    hostConn.on('open', () => { hostConn.send({type: 'join', name}); });
+    hostConn.on('data', (data) => {
+      if (data.type === 'state') {
+        playerState.state = data.state;
+        renderPlayer();
+      }
+    });
+    hostConn.on('close', () => { alert('Соединение с ведущим потеряно'); location.reload(); });
+    hostConn.on('error', (e) => { console.error(e); });
+  });
+  peer.on('error', (err) => {
+    console.error(err);
+    alert('Не удалось подключиться: ' + err.type + '. Проверьте код комнаты.');
+    joinScreen();
+  });
+}
+
+function renderPlayer() {
+  const s = playerState.state;
+  if (!s) return;
+
+  if (s.phase === 'question' && playerState.lastQIndex !== s.qIndex) {
+    playerState.lastQIndex = s.qIndex;
+    playerState.submitted = false;
+    playerState.myAnswer = '';
+  }
+
+  let key;
+  if (s.phase === 'lobby') key = 'lobby';
+  else if (s.phase === 'question') key = 'q' + s.qIndex + (playerState.submitted ? ':sub' : '');
+  else if (s.phase === 'reveal') key = 'r' + s.qIndex;
+  else if (s.phase === 'final') key = 'final';
+  else key = 'unknown';
+
+  if (currentPlayerScreen === key) {
+    const t = document.querySelector('.timer');
+    if (t && s.phase === 'question') {
+      t.textContent = String(s.timeLeft);
+      t.classList.toggle('danger', s.timeLeft <= 5);
+    }
+    return;
+  }
+  currentPlayerScreen = key;
+
+  if (s.phase === 'lobby') {
+    showScreen(el => {
+      el.appendChild(h('div', {class:'center'},
+        h('div', {class:'badge'}, 'Игрок'),
+        h('h1', {}, 'Вы в комнате'),
+        h('p', {class:'sub'}, 'Ждём начала игры…'),
+        h('div', {class:'players', style:{marginTop:'20px'}}, ...s.players.map(p =>
+          h('div', {class:'chip' + (p.name === playerState.name ? ' me' : '')}, p.name)
+        )),
+      ));
+    });
+    return;
+  }
+
+  if (s.phase === 'question') {
+    const me = s.players.find(p => p.name === playerState.name);
+    showScreen(el => {
+      const wrap = h('div', {});
+      wrap.appendChild(h('div', {class:'progress'}, `Вопрос ${s.qIndex + 1} из ${s.totalQ}`));
+      wrap.appendChild(h('div', {class:'timer' + (s.timeLeft <= 5 ? ' danger' : '')}, String(s.timeLeft)));
+      wrap.appendChild(h('div', {class:'question'}, s.question));
+      if (playerState.submitted) {
+        wrap.appendChild(h('div', {class:'submitted'}, 'Ответ принят ✓'));
+        wrap.appendChild(h('p', {class:'sub', style:{textAlign:'center'}}, 'Ждём остальных…'));
+      } else {
+        const input = h('input', {class:'input', placeholder:'Ваш ответ', autocomplete:'off', maxlength:'60'});
+        input.value = playerState.myAnswer;
+        const submit = () => {
+          const v = input.value.trim();
+          if (!v) { input.focus(); return; }
+          playerState.myAnswer = v;
+          playerState.submitted = true;
+          try { hostConn.send({type: 'answer', text: v}); } catch(e) {}
+          renderPlayer();
+        };
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+        wrap.appendChild(input);
+        wrap.appendChild(h('button', {class:'btn primary', onclick: submit}, 'Ответить'));
+      }
+      if (me) wrap.appendChild(h('p', {class:'sub', style:{textAlign:'center', marginTop:'16px'}}, 'Очки: ' + me.score));
+      el.appendChild(wrap);
+    });
+    return;
+  }
+
+  if (s.phase === 'reveal') {
+    const me = s.players.find(p => p.name === playerState.name);
+    const sorted = [...s.players].sort((a,b) => b.score - a.score);
+    showScreen(el => {
+      const wrap = h('div', {});
+      wrap.appendChild(h('div', {class:'progress'}, `Вопрос ${s.qIndex + 1} из ${s.totalQ}`));
+      wrap.appendChild(h('div', {class:'answer-box'},
+        h('div', {class:'label'}, 'Правильный ответ'),
+        h('div', {class:'answer'}, s.correctAnswer || '—'),
+      ));
+      if (me) {
+        wrap.appendChild(h('div', {class:'my-result ' + (me.correct ? 'correct' : 'wrong')},
+          h('div', {class:'label'}, me.correct ? '✓ Верно!' : '✗ Неверно'),
+          h('div', {class:'my-answer'}, 'Ваш ответ: ' + (me.answer || '—')),
+        ));
+      }
+      wrap.appendChild(h('h3', {}, 'Таблица'));
+      wrap.appendChild(h('div', {class:'leaderboard'}, ...sorted.map(p =>
+        h('div', {class:'lb-row' + (p.name === playerState.name ? ' me' : '')},
+          h('span', {}, p.name),
+          h('span', {class:'score'}, p.score),
+        )
+      )));
+      wrap.appendChild(h('p', {class:'sub', style:{textAlign:'center'}}, 'Ждём следующего вопроса…'));
+      el.appendChild(wrap);
+    });
+    return;
+  }
+
+  if (s.phase === 'final') {
+    const sorted = [...s.players].sort((a,b) => b.score - a.score);
+    showScreen(el => {
+      el.appendChild(h('div', {class:'center', style:{width:'100%'}},
+        h('h1', {}, 'Игра окончена!'),
+        h('div', {class:'leaderboard', style:{width:'100%'}}, ...sorted.map((p, i) =>
+          h('div', {class:'lb-row' + (p.name === playerState.name ? ' me' : '')},
+            h('span', {}, h('span', {class:'place'}, (i+1) + '.'), p.name),
+            h('span', {class:'score'}, p.score),
+          )
+        )),
+        h('p', {class:'sub'}, 'Ведущий может начать новую игру'),
+      ));
+    });
+    return;
+  }
+}
+
+homeScreen();
+</script>
+</body>
+</html>
