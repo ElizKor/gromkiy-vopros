@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#1a1428">
-<title>Громкий вопрос</title>
+<title>Громкий вопрос — Объясни без слов</title>
 <style>
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body {
@@ -36,6 +36,7 @@ p { margin: 0 0 12px; }
   color: #1a1428; border: none; box-shadow: 0 6px 20px rgba(255,184,77,0.3);
 }
 .btn.ghost { background: transparent; }
+.btn.danger { background: #f87171; color: #1a1428; border: none; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .input {
   display: block; width: 100%; padding: 16px 18px; border-radius: 14px;
@@ -70,27 +71,26 @@ p { margin: 0 0 12px; }
 }
 .timer.danger { color: #f87171; }
 .question {
-  font-size: 22px; font-weight: 600; line-height: 1.35; margin-bottom: 24px;
+  font-size: 22px; font-weight: 600; line-height: 1.35; margin-bottom: 16px;
   padding: 20px; background: #2a2140; border-radius: 16px; border: 1px solid #3a2f55;
 }
 .answer-box {
   background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3);
-  border-radius: 16px; padding: 18px; margin-bottom: 16px; text-align: center;
+  border-radius: 16px; padding: 14px 18px; margin-bottom: 16px; text-align: center;
 }
 .answer-box .label {
-  font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em;
-  color: #4ade80; margin-bottom: 8px; font-weight: 700;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: #4ade80; margin-bottom: 6px; font-weight: 700;
 }
-.answer-box .answer { font-size: 22px; font-weight: 700; }
+.answer-box .answer { font-size: 20px; font-weight: 700; }
 .row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 12px 16px; background: #2a2140; border-radius: 12px;
   margin-bottom: 8px; font-size: 15px; gap: 10px;
 }
-.row.correct { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); }
+.row.done { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.25); }
 .row .a { color: #9a8fb8; flex: 1; text-align: right; word-break: break-word; }
 .row .mark { font-size: 20px; color: #9a8fb8; flex-shrink: 0; }
-.row.correct .mark { color: #4ade80; }
 .row.done .mark { color: #4ade80; }
 .leaderboard {
   background: #2a2140; border-radius: 16px; padding: 6px;
@@ -109,13 +109,6 @@ p { margin: 0 0 12px; }
   border-radius: 14px; padding: 20px; text-align: center; font-weight: 600;
   color: #4ade80; margin-bottom: 12px;
 }
-.my-result { border-radius: 14px; padding: 16px; margin-bottom: 16px; text-align: center; }
-.my-result.correct { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); }
-.my-result.wrong { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); }
-.my-result .label { font-weight: 700; margin-bottom: 6px; }
-.my-result.correct .label { color: #4ade80; }
-.my-result.wrong .label { color: #f87171; }
-.my-result .my-answer { color: #9a8fb8; font-size: 14px; }
 .select {
   display: block; width: 100%; padding: 16px 18px; border-radius: 14px;
   border: 1px solid #3a2f55; background: #2a2140; color: #f5f0ff;
@@ -124,6 +117,52 @@ p { margin: 0 0 12px; }
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%239a8fb8' d='M6 8L0 0h12z'/></svg>");
   background-repeat: no-repeat; background-position: right 18px center;
 }
+/* Music-specific UI */
+.look-at-host {
+  background: linear-gradient(135deg, rgba(255,184,77,0.15), rgba(232,160,64,0.08));
+  border: 1px solid rgba(255,184,77,0.4);
+  border-radius: 18px; padding: 24px 18px; text-align: center;
+  margin-bottom: 16px;
+}
+.look-at-host .emoji { font-size: 44px; display: block; margin-bottom: 8px; animation: bob 1.2s ease-in-out infinite; }
+.look-at-host .title { font-size: 18px; font-weight: 700; color: #ffb84d; margin-bottom: 4px; }
+.look-at-host .hint { font-size: 14px; color: #c9bce0; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.music-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 12px; background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.3); margin-bottom: 14px;
+}
+.music-bar .icon { font-size: 22px; animation: pulse 1s ease-in-out infinite; }
+.music-bar .label { flex: 1; font-size: 13px; color: #fca5a5; font-weight: 600; }
+.music-bar input[type="range"] { width: 100px; accent-color: #f87171; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.team-score {
+  text-align: center; font-size: 15px; color: #9a8fb8; margin: 14px 0;
+}
+.team-score b { color: #ffb84d; }
+.result-hero {
+  text-align: center; padding: 22px 16px; border-radius: 18px; margin-bottom: 16px;
+}
+.result-hero.win {
+  background: rgba(74,222,128,0.12); border: 2px solid rgba(74,222,128,0.5);
+}
+.result-hero.lose {
+  background: rgba(248,113,113,0.12); border: 2px solid rgba(248,113,113,0.5);
+}
+.result-hero .big { font-size: 32px; font-weight: 800; margin-bottom: 6px; }
+.result-hero.win .big { color: #4ade80; }
+.result-hero.lose .big { color: #f87171; }
+.result-hero .reason { font-size: 15px; color: #c9bce0; line-height: 1.4; }
+.answer-line {
+  display: flex; justify-content: space-between; padding: 10px 14px;
+  background: #2a2140; border-radius: 10px; margin-bottom: 6px;
+  font-size: 15px; gap: 10px;
+}
+.answer-line .who { color: #9a8fb8; flex-shrink: 0; }
+.answer-line .what { font-weight: 600; text-align: right; word-break: break-word; }
+.answer-line.same { border: 1px solid rgba(74,222,128,0.3); }
+.answer-line.diff { border: 1px solid rgba(248,113,113,0.3); }
 </style>
 </head>
 <body>
@@ -132,15 +171,14 @@ p { margin: 0 0 12px; }
 <script>
 'use strict';
 
-const ROUND_TIME = 60; // ← длительность раунда в секундах
-
+// ============ QUESTIONS ============
 const QUESTIONS = [
   {q:"Пятый цвет радуги", a:["голубой"]},
   {q:"Кто украл Рождество?", a:["гринч"]},
   {q:"Имя кролика в «Смешариках»", a:["крош"]},
   {q:"Какой город называют «Большим яблоком»?", a:["нью-йорк","нью йорк","ньюйорк","new york","newyork","ny"]},
   {q:"Столица Бразилии", a:["бразилиа","бразилия"]},
-  {q:"Какие инициалы у Пушкина?", a:["ас","а.с.","александр сергеевич","пушкин"]},
+  {q:"Какие инициалы у Пушкина?", a:["ас","а.с.","александр сергеевич"]},
   {q:"Что летит от топота копыт?", a:["пыль"]},
   {q:"Утка-мужик", a:["селезень"]},
   {q:"В каком городе находится падающая башня?", a:["пиза"]},
@@ -151,12 +189,12 @@ const QUESTIONS = [
   {q:"Кличка коня Александра Македонского", a:["буцефал"]},
   {q:"Первый элемент таблицы Менделеева", a:["водород"]},
   {q:"Гибрид лошади и осла", a:["мул"]},
-  {q:"Самое высокое здание в мире", a:["бурдж-халифа","бурдж халифа","бурджхалифа","burj khalifa","бурдж"]},
-  {q:"Кто убил Ленского в «Евгении Онегине»?", a:["онегин","евгений онегин"]},
+  {q:"Самое высокое здание в мире", a:["бурдж-халифа","бурдж халифа","burj khalifa","бурдж"]},
+  {q:"Кто убил Ленского в «Евгении Онегине»?", a:["онегин"]},
   {q:"Имя гиппогрифа Хагрида", a:["клювокрыл"]},
   {q:"Кто исполняет песню «П.М.М.Л.»?", a:["земфира"]},
   {q:"Единственное, что может убить Супермена", a:["криптонит"]},
-  {q:"Оруженосец Дон Кихота", a:["санчо панса","санчо","санчопанса"]},
+  {q:"Оруженосец Дон Кихота", a:["санчо панса","санчо"]},
   {q:"Автор романа «Алхимик»", a:["коэльо","паоло коэльо"]},
   {q:"Настоящая фамилия Егора Крида", a:["булаткин"]},
   {q:"Столица Австралии", a:["канберра"]},
@@ -172,6 +210,7 @@ const QUESTIONS = [
   {q:"Кто написал «Мойдодыр»?", a:["чуковский","корней чуковский"]},
 ];
 
+// ============ UTILS ============
 function h(tag, attrs, ...children) {
   const el = document.createElement(tag);
   if (attrs) {
@@ -192,9 +231,7 @@ function h(tag, attrs, ...children) {
   }
   return el;
 }
-
 function norm(s) { return String(s || '').toLowerCase().replace(/[^а-яёa-z0-9]/g, ''); }
-
 function checkAnswer(playerAnswer, acceptable) {
   const n = norm(playerAnswer);
   if (!n) return false;
@@ -204,7 +241,6 @@ function checkAnswer(playerAnswer, acceptable) {
     return n === na || (na.length >= 4 && n.includes(na));
   });
 }
-
 function randomCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let s = '';
@@ -220,16 +256,111 @@ function shuffle(arr) {
   return a;
 }
 
-const ROOM_PREFIX = 'gromkiy-vopros-2024-';
-const app = document.getElementById('app');
-function showScreen(builder) { app.innerHTML = ''; builder(app); }
+// ============ MUSIC PLAYER (procedural beat) ============
+const musicPlayer = (() => {
+  let ctx = null, master = null;
+  let isPlaying = false, scheduleTimer = null;
+  let nextNoteTime = 0, currentStep = 0;
+  const BPM = 128, STEP_TIME = 60 / BPM / 4, TOTAL_STEPS = 16;
+  const bassPattern = [55, 55, 65.4, 65.4, 49, 49, 43.6, 43.6];
 
+  function init() {
+    if (ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    ctx = new AC();
+    master = ctx.createGain();
+    master.gain.value = 0.7;
+    master.connect(ctx.destination);
+  }
+  function kick(t) {
+    if (!ctx) return;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.setValueAtTime(140, t);
+    o.frequency.exponentialRampToValueAtTime(40, t + 0.08);
+    g.gain.setValueAtTime(1.0, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    o.connect(g).connect(master);
+    o.start(t); o.stop(t + 0.3);
+  }
+  function hat(t) {
+    if (!ctx) return;
+    const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.05), ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const f = ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 7000;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.18, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    src.connect(f).connect(g).connect(master);
+    src.start(t); src.stop(t + 0.05);
+  }
+  function snare(t) {
+    if (!ctx) return;
+    const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.2), ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1800;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.45, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+    src.connect(f).connect(g).connect(master);
+    src.start(t); src.stop(t + 0.2);
+  }
+  function bass(t, freq) {
+    if (!ctx) return;
+    const o = ctx.createOscillator(); o.type = 'square'; o.frequency.value = freq;
+    const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 350;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.28, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + STEP_TIME * 1.5);
+    o.connect(f).connect(g).connect(master);
+    o.start(t); o.stop(t + STEP_TIME * 1.5);
+  }
+  function scheduleStep(step, t) {
+    if (step % 4 === 0) kick(t);
+    if (step === 4 || step === 12) snare(t);
+    if (step % 2 === 0) hat(t);
+    if (step % 2 === 0) bass(t, bassPattern[Math.floor(step / 2) % 8]);
+  }
+  function scheduler() {
+    if (!ctx) return;
+    while (nextNoteTime < ctx.currentTime + 0.1) {
+      scheduleStep(currentStep, nextNoteTime);
+      nextNoteTime += STEP_TIME;
+      currentStep = (currentStep + 1) % TOTAL_STEPS;
+    }
+  }
+  return {
+    prime() { init(); if (ctx && ctx.state === 'suspended') ctx.resume(); },
+    start() {
+      init();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') ctx.resume();
+      if (isPlaying) return;
+      isPlaying = true;
+      nextNoteTime = ctx.currentTime + 0.05;
+      currentStep = 0;
+      scheduler();
+      scheduleTimer = setInterval(scheduler, 25);
+    },
+    stop() {
+      isPlaying = false;
+      if (scheduleTimer) clearInterval(scheduleTimer);
+      scheduleTimer = null;
+    },
+    setVolume(v) { if (master) master.gain.value = v; },
+    isPlaying() { return isPlaying; },
+  };
+})();
+
+// ============ HOST STATE ============
 const hostState = {
-  code: null, phase: 'lobby', qIndex: 0, timeLeft: ROUND_TIME, timerId: null,
+  code: null, phase: 'lobby', qIndex: 0, timeLeft: 60, timerId: null,
   questions: [], players: [],
-};
-const playerState = {
-  name: null, code: null, lastQIndex: -1, myAnswer: '', submitted: false, state: null,
+  teamScore: 0, roundWon: null, roundReason: '',
 };
 
 let peer = null;
@@ -238,16 +369,25 @@ let hostConn = null;
 let currentHostKey = null;
 let currentPlayerScreen = null;
 
+const app = document.getElementById('app');
+function showScreen(builder) { app.innerHTML = ''; builder(app); }
+
+// ============ HOME ============
 function homeScreen() {
   showScreen(el => {
     el.appendChild(h('div', {class:'center'},
       h('h1', {}, 'Громкий вопрос'),
-      h('p', {class:'sub', style:{marginBottom:'32px'}}, 'Игра для компании'),
-      h('button', {class:'btn primary', onclick: startHost}, 'Создать комнату'),
-      h('button', {class:'btn', onclick: joinScreen}, 'Присоединиться'),
+      h('p', {class:'sub', style:{marginBottom:'8px'}}, 'Объясни без слов'),
+      h('p', {class:'sub', style:{marginBottom:'32px', fontSize:'13px'}},
+        'Ведущий видит вопрос и показывает его жестами. Игроки смотрят на него, но у каждого в телефоне громко играет музыка — они не слышат ни ведущего, ни друг друга. Победа — если все дали одинаковый правильный ответ.'),
+      h('button', {class:'btn primary', onclick: startHost}, 'Я ведущий'),
+      h('button', {class:'btn', onclick: joinScreen}, 'Я игрок'),
     ));
   });
 }
+
+// ============ HOST ============
+const ROOM_PREFIX = 'gromkiy-vopros-v2-';
 
 function startHost() {
   showScreen(el => {
@@ -261,26 +401,20 @@ function startHost() {
   hostState.qIndex = 0;
   hostState.players = [];
   hostState.questions = [];
+  hostState.teamScore = 0;
+  hostState.roundWon = null;
+  hostState.roundReason = '';
   clearInterval(hostState.timerId);
   connections.clear();
   currentHostKey = null;
 
-  peer = new Peer(ROOM_PREFIX + hostState.code, {
-  debug: 1,
-  config: {
-    iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:stun2.l.google.com:19302' }
-    ]
-  }
-});
-  peer.on('open', () => { renderHostLobby(); });
+  if (peer) { try { peer.destroy(); } catch(e) {} }
+  peer = new Peer(ROOM_PREFIX + hostState.code, {debug: 1});
+  peer.on('open', () => renderHostLobby());
   peer.on('connection', onPlayerConnect);
   peer.on('error', (err) => {
     console.error(err);
     if (err.type === 'unavailable-id') {
-      alert('Код занят, пробуем другой…');
       try { peer.destroy(); } catch(e) {}
       startHost();
     } else {
@@ -296,7 +430,7 @@ function onPlayerConnect(conn) {
       if (hostState.players.some(p => p.id === conn.peer)) return;
       hostState.players.push({
         id: conn.peer, name: (data.name || 'Игрок').slice(0, 20),
-        conn, score: 0, answer: null, correct: false,
+        conn, answer: null,
       });
       connections.set(conn.peer, conn);
       broadcast();
@@ -304,8 +438,6 @@ function onPlayerConnect(conn) {
       const player = hostState.players.find(p => p.id === conn.peer);
       if (player && hostState.phase === 'question' && player.answer == null) {
         player.answer = String(data.text || '').slice(0, 80);
-        const q = hostState.questions[hostState.qIndex];
-        player.correct = checkAnswer(player.answer, q.a);
         broadcast();
       }
     }
@@ -315,7 +447,6 @@ function onPlayerConnect(conn) {
     connections.delete(conn.peer);
     broadcast();
   });
-  conn.on('error', (e) => { console.error('conn error', e); });
 }
 
 function publicState() {
@@ -327,9 +458,13 @@ function publicState() {
     question: (s.phase === 'question' || s.phase === 'reveal') && q ? q.q : null,
     correctAnswer: showAnswer && q ? q.a[0] : null,
     players: s.players.map(p => ({
-      name: p.name, score: p.score, answered: p.answer != null,
-      answer: showAnswer ? p.answer : null, correct: showAnswer ? p.correct : null,
+      name: p.name,
+      answered: p.answer != null,
+      answer: showAnswer ? p.answer : null,
     })),
+    teamScore: s.teamScore,
+    roundWon: s.roundWon,
+    roundReason: s.roundReason,
   };
 }
 
@@ -344,7 +479,7 @@ function broadcast() {
 
 function startTimer() {
   clearInterval(hostState.timerId);
-  hostState.timeLeft = ROUND_TIME;
+  hostState.timeLeft = 60;
   broadcast();
   hostState.timerId = setInterval(() => {
     if (hostState.phase !== 'question') { clearInterval(hostState.timerId); return; }
@@ -360,17 +495,46 @@ function startTimer() {
 function startGame(count) {
   hostState.questions = shuffle(QUESTIONS).slice(0, count);
   hostState.qIndex = 0;
-  hostState.players.forEach(p => { p.score = 0; p.answer = null; p.correct = false; });
+  hostState.teamScore = 0;
+  hostState.players.forEach(p => { p.answer = null; });
+  hostState.roundWon = null;
+  hostState.roundReason = '';
   hostState.phase = 'question';
   currentHostKey = null;
   startTimer();
 }
 
+function evaluateRound() {
+  const s = hostState;
+  const q = s.questions[s.qIndex];
+  if (s.players.length === 0) {
+    return { won: false, reason: 'Нет игроков.' };
+  }
+  const notAnswered = s.players.filter(p => p.answer == null);
+  if (notAnswered.length > 0) {
+    return { won: false, reason: 'Не все успели ответить.' };
+  }
+  const answers = s.players.map(p => norm(p.answer));
+  const first = answers[0];
+  const allSame = answers.every(a => a === first);
+  if (!allSame) {
+    return { won: false, reason: 'Ответы не совпали — все должны были ответить одинаково.' };
+  }
+  const correct = checkAnswer(s.players[0].answer, q.a);
+  if (!correct) {
+    return { won: false, reason: 'Все ответили одинаково, но это неверный ответ.' };
+  }
+  return { won: true, reason: 'Все дали одинаковый правильный ответ!' };
+}
+
 function revealAnswer() {
   clearInterval(hostState.timerId);
   if (hostState.phase !== 'question') return;
+  const result = evaluateRound();
+  hostState.roundWon = result.won;
+  hostState.roundReason = result.reason;
+  if (result.won) hostState.teamScore++;
   hostState.phase = 'reveal';
-  hostState.players.forEach(p => { if (p.correct) p.score++; });
   broadcast();
 }
 
@@ -382,21 +546,25 @@ function nextQuestion() {
     broadcast();
     return;
   }
-  hostState.players.forEach(p => { p.answer = null; p.correct = false; });
+  hostState.players.forEach(p => { p.answer = null; });
+  hostState.roundWon = null;
+  hostState.roundReason = '';
   hostState.phase = 'question';
+  currentHostKey = null;
   startTimer();
 }
 
+// ============ HOST RENDER ============
 function renderHostLobby() {
   currentHostKey = null;
   showScreen(el => {
     const countSel = h('select', {class:'select'},
       h('option', {value:'5'}, '5 вопросов'),
+      h('option', {value:'8'}, '8 вопросов'),
       h('option', {value:'10'}, '10 вопросов'),
       h('option', {value:'15'}, '15 вопросов'),
-      h('option', {value:'20'}, '20 вопросов'),
     );
-    countSel.value = '10';
+    countSel.value = '8';
     const btn = h('button', {class:'btn primary'}, 'Начать игру');
     if (hostState.players.length === 0) {
       btn.disabled = true;
@@ -409,6 +577,10 @@ function renderHostLobby() {
       h('h1', {}, 'Комната создана'),
       h('div', {class:'room-code'}, hostState.code),
       h('p', {class:'sub', style:{textAlign:'center'}}, 'Скажите игрокам этот код'),
+      h('div', {class:'music-bar', style:{marginTop:'16px'}},
+        h('span', {class:'icon'}, '🎵'),
+        h('span', {class:'label'}, 'На телефонах игроков во время раунда будет громко играть музыка'),
+      ),
       h('h3', {}, 'Игроки: ' + hostState.players.length),
       h('div', {class:'players'}, ...hostState.players.map(p => h('div', {class:'chip'}, p.name))),
       countSel, btn,
@@ -421,72 +593,96 @@ function renderHostGame() {
   if (s.phase === 'lobby') { renderHostLobby(); return; }
   const q = s.questions[s.qIndex];
   const answeredCount = s.players.filter(p => p.answer != null).length;
-  const key = s.phase + ':' + s.qIndex + ':' + answeredCount;
 
-  if (currentHostKey === key) {
+  // Incremental update: same question, same answered count → just tick the timer.
+  if (s.phase === 'question' && currentHostKey === ('question:' + s.qIndex + ':' + answeredCount)) {
     const t = document.querySelector('.timer');
-    if (t && s.phase === 'question') {
+    if (t) {
       t.textContent = String(s.timeLeft);
-      t.classList.toggle('danger', s.timeLeft <= 5);
+      t.classList.toggle('danger', s.timeLeft <= 10);
     }
     return;
   }
-  currentHostKey = key;
+
+  // Build new key for this render
+  currentHostKey = s.phase + ':' + s.qIndex + ':' + answeredCount;
 
   showScreen(el => {
     const wrap = h('div', {});
-    if (s.phase === 'question' || s.phase === 'reveal') {
-      wrap.appendChild(h('div', {class:'progress'}, `Вопрос ${s.qIndex + 1} из ${s.questions.length}`));
-      wrap.appendChild(h('div', {class:'timer' + (s.timeLeft <= 5 ? ' danger' : '')}, String(s.timeLeft)));
-      wrap.appendChild(h('div', {class:'question'}, q.q));
-      if (s.phase === 'reveal') {
-        wrap.appendChild(h('div', {class:'answer-box'},
-          h('div', {class:'label'}, 'Правильный ответ'),
-          h('div', {class:'answer'}, q.a[0]),
+    wrap.appendChild(h('div', {class:'progress'}, `Вопрос ${s.qIndex + 1} из ${s.questions.length}`));
+    wrap.appendChild(h('div', {class:'timer' + (s.timeLeft <= 10 ? ' danger' : '')}, String(s.timeLeft)));
+
+    if (s.phase === 'question') {
+      wrap.appendChild(h('div', {class:'question', style:{marginBottom:'14px'}}, q.q));
+      wrap.appendChild(h('div', {class:'look-at-host', style:{padding:'18px'}},
+        h('span', {class:'emoji'}, '🙌'),
+        h('div', {class:'title'}, 'Показывайте вопрос жестами!'),
+        h('div', {class:'hint'}, 'Игроки вас не слышат — только смотрят. Правильный ответ вы увидите вместе со всеми в конце раунда.'),
+      ));
+      wrap.appendChild(h('h3', {}, `Ответили: ${answeredCount} из ${s.players.length}`));
+      s.players.forEach((p, i) => {
+        wrap.appendChild(h('div', {class:'row' + (p.answer != null ? ' done' : ''), 'data-player-row': String(i)},
+          h('span', {}, p.name),
+          h('span', {class:'mark'}, p.answer != null ? '✓' : '…'),
         ));
-        wrap.appendChild(h('h3', {}, 'Ответы игроков'));
-        s.players.forEach(p => {
-          wrap.appendChild(h('div', {class:'row' + (p.correct ? ' correct' : '')},
-            h('span', {}, p.name),
-            h('span', {class:'a'}, p.answer || '—'),
-            h('span', {class:'mark'}, p.correct ? '✓' : '✗'),
-          ));
-        });
-        const last = s.qIndex + 1 >= s.questions.length;
-        wrap.appendChild(h('button', {class:'btn primary', style:{marginTop:'16px'}, onclick: nextQuestion},
-          last ? 'Показать итоги' : 'Следующий вопрос'));
-      } else {
-        wrap.appendChild(h('h3', {}, 'Ждём ответы'));
-        s.players.forEach(p => {
-          wrap.appendChild(h('div', {class:'row' + (p.answer ? ' correct' : '')},
-            h('span', {}, p.name),
-            h('span', {class:'mark'}, p.answer ? '✓' : '…'),
-          ));
-        });
-        wrap.appendChild(h('button', {
-          class:'btn primary', style:{marginTop:'16px'},
-          onclick: () => { clearInterval(s.timerId); revealAnswer(); },
-        }, 'Показать ответ'));
-      }
+      });
+      wrap.appendChild(h('button', {
+        class:'btn primary', style:{marginTop:'16px'},
+        onclick: () => { clearInterval(s.timerId); revealAnswer(); },
+      }, answeredCount === s.players.length ? 'Все ответили — открыть' : 'Завершить раунд'));
+    } else if (s.phase === 'reveal') {
+      const win = s.roundWon;
+      wrap.appendChild(h('div', {class:'result-hero ' + (win ? 'win' : 'lose')},
+        h('div', {class:'big'}, win ? '✅ ПОБЕДА!' : '❌ ПРОИГРАЛИ'),
+        h('div', {class:'reason'}, s.roundReason),
+      ));
+      wrap.appendChild(h('div', {class:'answer-box'},
+        h('div', {class:'label'}, 'Правильный ответ'),
+        h('div', {class:'answer'}, q.a[0]),
+      ));
+      wrap.appendChild(h('h3', {}, 'Ответы игроков'));
+      const answers = s.players.map(p => norm(p.answer || ''));
+      const first = answers[0];
+      const allSame = answers.length > 0 && answers.every(a => a === first && a !== '');
+      s.players.forEach(p => {
+        const cls = allSame ? 'same' : 'diff';
+        wrap.appendChild(h('div', {class:'answer-line ' + cls},
+          h('span', {class:'who'}, p.name + ':'),
+          h('span', {class:'what'}, p.answer || '—'),
+        ));
+      });
+      wrap.appendChild(h('div', {class:'team-score'},
+        'Командный счёт: ', h('b', {}, String(s.teamScore)), ` из ${s.qIndex + 1}`,
+      ));
+      const last = s.qIndex + 1 >= s.questions.length;
+      wrap.appendChild(h('button', {class:'btn primary', onclick: nextQuestion},
+        last ? 'Показать итоги' : 'Следующий вопрос'));
     } else if (s.phase === 'final') {
-      const sorted = [...s.players].sort((a,b) => b.score - a.score);
-      wrap.appendChild(h('h1', {style:{textAlign:'center', marginBottom:'20px'}}, 'Игра окончена!'));
-      wrap.appendChild(h('div', {class:'leaderboard'}, ...sorted.map((p, i) =>
-        h('div', {class:'lb-row'},
-          h('span', {}, h('span', {class:'place'}, (i+1) + '.'), p.name),
-          h('span', {class:'score'}, p.score + ' очк.'),
-        )
-      )));
+      const total = s.questions.length;
+      const pct = total ? Math.round(s.teamScore / total * 100) : 0;
+      wrap.appendChild(h('div', {class:'result-hero ' + (s.teamScore > total / 2 ? 'win' : 'lose')},
+        h('div', {class:'big'}, `${s.teamScore} / ${total}`),
+        h('div', {class:'reason'}, `Вы угадали ${pct}% вопросов командой`),
+      ));
       wrap.appendChild(h('button', {class:'btn primary', onclick: () => {
         s.phase = 'lobby';
         s.qIndex = 0;
-        s.players.forEach(p => { p.score = 0; p.answer = null; p.correct = false; });
+        s.teamScore = 0;
+        s.roundWon = null;
+        s.roundReason = '';
+        s.players.forEach(p => { p.answer = null; });
         broadcast();
       }}, 'Играть снова'));
     }
     el.appendChild(wrap);
   });
 }
+
+// ============ PLAYER ============
+const playerState = {
+  name: null, code: null, lastQIndex: -1, myAnswer: '', submitted: false,
+  state: null, musicVolume: 0.7,
+};
 
 function joinScreen() {
   showScreen(el => {
@@ -497,6 +693,8 @@ function joinScreen() {
       const code = codeInput.value.trim().toUpperCase();
       if (!name) { nameInput.focus(); return; }
       if (code.length < 4) { codeInput.focus(); return; }
+      // Prime audio context on this user gesture
+      musicPlayer.prime();
       connectToHost(code, name);
     }}, 'Войти');
     codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') btn.click(); });
@@ -524,16 +722,8 @@ function connectToHost(code, name) {
     ));
   });
 
-    peer = new Peer({
-    debug: 1,
-    config: {
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun2.l.google.com:19302' }
-      ]
-    }
-  });
+  if (peer) { try { peer.destroy(); } catch(e) {} }
+  peer = new Peer({debug: 1});
   peer.on('open', () => {
     hostConn = peer.connect(ROOM_PREFIX + code, {reliable: true});
     hostConn.on('open', () => { hostConn.send({type: 'join', name}); });
@@ -543,8 +733,11 @@ function connectToHost(code, name) {
         renderPlayer();
       }
     });
-    hostConn.on('close', () => { alert('Соединение с ведущим потеряно'); location.reload(); });
-    hostConn.on('error', (e) => { console.error(e); });
+    hostConn.on('close', () => {
+      musicPlayer.stop();
+      alert('Соединение с ведущим потеряно');
+      location.reload();
+    });
   });
   peer.on('error', (err) => {
     console.error(err);
@@ -563,6 +756,16 @@ function renderPlayer() {
     playerState.myAnswer = '';
   }
 
+  // Music control: start on question, stop on reveal/final/lobby
+  if (s.phase === 'question') {
+    if (!musicPlayer.isPlaying()) {
+      musicPlayer.setVolume(playerState.musicVolume);
+      musicPlayer.start();
+    }
+  } else {
+    if (musicPlayer.isPlaying()) musicPlayer.stop();
+  }
+
   let key;
   if (s.phase === 'lobby') key = 'lobby';
   else if (s.phase === 'question') key = 'q' + s.qIndex + (playerState.submitted ? ':sub' : '');
@@ -574,7 +777,7 @@ function renderPlayer() {
     const t = document.querySelector('.timer');
     if (t && s.phase === 'question') {
       t.textContent = String(s.timeLeft);
-      t.classList.toggle('danger', s.timeLeft <= 5);
+      t.classList.toggle('danger', s.timeLeft <= 10);
     }
     return;
   }
@@ -585,27 +788,50 @@ function renderPlayer() {
       el.appendChild(h('div', {class:'center'},
         h('div', {class:'badge'}, 'Игрок'),
         h('h1', {}, 'Вы в комнате'),
-        h('p', {class:'sub'}, 'Ждём начала игры…'),
+        h('p', {class:'sub'}, 'Ждём начала. Проверьте звук телефона.'),
         h('div', {class:'players', style:{marginTop:'20px'}}, ...s.players.map(p =>
           h('div', {class:'chip' + (p.name === playerState.name ? ' me' : '')}, p.name)
         )),
+        h('div', {class:'music-bar', style:{marginTop:'24px', textAlign:'left'}},
+          h('span', {class:'icon'}, '🔊'),
+          h('span', {class:'label', style:{color:'#fca5a5'}}, 'Во время раунда у вас в телефоне будет громко играть музыка'),
+        ),
       ));
     });
     return;
   }
 
   if (s.phase === 'question') {
-    const me = s.players.find(p => p.name === playerState.name);
     showScreen(el => {
       const wrap = h('div', {});
       wrap.appendChild(h('div', {class:'progress'}, `Вопрос ${s.qIndex + 1} из ${s.totalQ}`));
-      wrap.appendChild(h('div', {class:'timer' + (s.timeLeft <= 5 ? ' danger' : '')}, String(s.timeLeft)));
-      wrap.appendChild(h('div', {class:'question'}, s.question));
+      wrap.appendChild(h('div', {class:'timer' + (s.timeLeft <= 10 ? ' danger' : '')}, String(s.timeLeft)));
+
+      wrap.appendChild(h('div', {class:'look-at-host'},
+        h('span', {class:'emoji'}, '👀'),
+        h('div', {class:'title'}, 'ВНИМАНИЕ НА ВЕДУЩЕГО'),
+        h('div', {class:'hint'}, 'Он показывает вопрос жестами. Вы не слышите ни его, ни других.'),
+      ));
+
+      const vol = h('input', {
+        type:'range', min:'0.1', max:'1', step:'0.05',
+        value: String(playerState.musicVolume),
+        oninput: (e) => {
+          playerState.musicVolume = parseFloat(e.target.value);
+          musicPlayer.setVolume(playerState.musicVolume);
+        },
+      });
+      wrap.appendChild(h('div', {class:'music-bar'},
+        h('span', {class:'icon'}, '🎵'),
+        h('span', {class:'label'}, 'Музыка играет — так надо'),
+        vol,
+      ));
+
       if (playerState.submitted) {
         wrap.appendChild(h('div', {class:'submitted'}, 'Ответ принят ✓'));
-        wrap.appendChild(h('p', {class:'sub', style:{textAlign:'center'}}, 'Ждём остальных…'));
+        wrap.appendChild(h('p', {class:'sub', style:{textAlign:'center'}}, 'Ждём остальных… Музыка продолжает играть.'));
       } else {
-        const input = h('input', {class:'input', placeholder:'Ваш ответ', autocomplete:'off', maxlength:'60'});
+        const input = h('input', {class:'input', placeholder:'Ваш ответ (одним словом)', autocomplete:'off', maxlength:'60'});
         input.value = playerState.myAnswer;
         const submit = () => {
           const v = input.value.trim();
@@ -619,35 +845,42 @@ function renderPlayer() {
         wrap.appendChild(input);
         wrap.appendChild(h('button', {class:'btn primary', onclick: submit}, 'Ответить'));
       }
-      if (me) wrap.appendChild(h('p', {class:'sub', style:{textAlign:'center', marginTop:'16px'}}, 'Очки: ' + me.score));
       el.appendChild(wrap);
     });
     return;
   }
 
   if (s.phase === 'reveal') {
-    const me = s.players.find(p => p.name === playerState.name);
-    const sorted = [...s.players].sort((a,b) => b.score - a.score);
     showScreen(el => {
       const wrap = h('div', {});
       wrap.appendChild(h('div', {class:'progress'}, `Вопрос ${s.qIndex + 1} из ${s.totalQ}`));
+
+      const win = s.roundWon;
+      wrap.appendChild(h('div', {class:'result-hero ' + (win ? 'win' : 'lose')},
+        h('div', {class:'big'}, win ? '✅ ПОБЕДА' : '❌ ПРОИГРАЛИ'),
+        h('div', {class:'reason'}, s.roundReason),
+      ));
+
       wrap.appendChild(h('div', {class:'answer-box'},
         h('div', {class:'label'}, 'Правильный ответ'),
         h('div', {class:'answer'}, s.correctAnswer || '—'),
       ));
-      if (me) {
-        wrap.appendChild(h('div', {class:'my-result ' + (me.correct ? 'correct' : 'wrong')},
-          h('div', {class:'label'}, me.correct ? '✓ Верно!' : '✗ Неверно'),
-          h('div', {class:'my-answer'}, 'Ваш ответ: ' + (me.answer || '—')),
+
+      wrap.appendChild(h('h3', {}, 'Ваши ответы'));
+      const answers = s.players.map(p => norm(p.answer || ''));
+      const first = answers[0];
+      const allSame = answers.length > 0 && answers.every(a => a === first && a !== '');
+      s.players.forEach(p => {
+        const cls = allSame ? 'same' : 'diff';
+        wrap.appendChild(h('div', {class:'answer-line ' + cls},
+          h('span', {class:'who'}, p.name + ':'),
+          h('span', {class:'what'}, p.answer || '—'),
         ));
-      }
-      wrap.appendChild(h('h3', {}, 'Таблица'));
-      wrap.appendChild(h('div', {class:'leaderboard'}, ...sorted.map(p =>
-        h('div', {class:'lb-row' + (p.name === playerState.name ? ' me' : '')},
-          h('span', {}, p.name),
-          h('span', {class:'score'}, p.score),
-        )
-      )));
+      });
+
+      wrap.appendChild(h('div', {class:'team-score'},
+        'Командный счёт: ', h('b', {}, String(s.teamScore)), ` из ${s.qIndex + 1}`,
+      ));
       wrap.appendChild(h('p', {class:'sub', style:{textAlign:'center'}}, 'Ждём следующего вопроса…'));
       el.appendChild(wrap);
     });
@@ -655,16 +888,15 @@ function renderPlayer() {
   }
 
   if (s.phase === 'final') {
-    const sorted = [...s.players].sort((a,b) => b.score - a.score);
+    const total = s.totalQ;
+    const pct = total ? Math.round(s.teamScore / total * 100) : 0;
     showScreen(el => {
       el.appendChild(h('div', {class:'center', style:{width:'100%'}},
         h('h1', {}, 'Игра окончена!'),
-        h('div', {class:'leaderboard', style:{width:'100%'}}, ...sorted.map((p, i) =>
-          h('div', {class:'lb-row' + (p.name === playerState.name ? ' me' : '')},
-            h('span', {}, h('span', {class:'place'}, (i+1) + '.'), p.name),
-            h('span', {class:'score'}, p.score),
-          )
-        )),
+        h('div', {class:'result-hero ' + (s.teamScore > total / 2 ? 'win' : 'lose')},
+          h('div', {class:'big'}, `${s.teamScore} / ${total}`),
+          h('div', {class:'reason'}, `Вы угадали ${pct}% вопросов командой`),
+        ),
         h('p', {class:'sub'}, 'Ведущий может начать новую игру'),
       ));
     });
@@ -672,6 +904,7 @@ function renderPlayer() {
   }
 }
 
+// ============ INIT ============
 homeScreen();
 </script>
 </body>
